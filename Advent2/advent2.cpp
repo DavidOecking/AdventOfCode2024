@@ -7,16 +7,15 @@
 
 enum Direction {
     Ascending,
-    Descending,
-    Neither
+    Descending
 };
 
 bool isSafe(Direction direction, int currentNumber, int previousNumber){
     if(direction == Descending && currentNumber<previousNumber){
-        return true;
+        return abs(currentNumber-previousNumber)<=3;
     }
     if(direction == Ascending && currentNumber>previousNumber){
-        return true;    
+        return abs(currentNumber-previousNumber)<=3;
     }
     return false;
 }
@@ -24,6 +23,7 @@ bool isSafe(Direction direction, int currentNumber, int previousNumber){
 int main(int argc, char** argv){
 
     int safeCount = 0;
+    int dampenerSafeCount = 0;
     std::vector<std::array<int, 5>> safetyReports;
     std::ifstream inputFile("input");
     std::string line;
@@ -33,30 +33,36 @@ int main(int argc, char** argv){
         std::array<int, 5> currentReport = {};
         int index = 0;
         bool safe = false;
+        int badLevelCount = 0;
         Direction direction;
 
         while(currentLineStream >> currentNumber){
             if(index == 1){
-                if(currentNumber<currentReport[0]){
+                if(currentNumber<currentReport[0] && abs(currentNumber-currentReport[index-1])<=3){
                     direction = Descending;
                     safe = true;
-                }else if(currentNumber>currentReport[0]){
+                }else if(currentNumber>currentReport[0] && abs(currentNumber-currentReport[index-1])<=3){
                     direction = Ascending;
                     safe = true;
-                }else{
-                    direction = Neither;
                 }
-            }else if(index!=0 && safe){
+            }else if(index != 0 && badLevelCount <= 1){
                 safe = isSafe(direction, currentNumber, currentReport[index-1]);
             }
             currentReport[index] = currentNumber;
             index++;
         }
 
-        if(safe){ safeCount++; }
+        if(badLevelCount <= 1){ 
+            if(badLevelCount ==  0){
+                safeCount++; 
+            }
+            dampenerSafeCount++;
+        }
+
         safetyReports.push_back(currentReport);
     }
 
     std::cout << "Number of safe reports: " << safeCount << std::endl;
+    std::cout << "Number of safe reports with dampener: " << safeCount << std::endl;
     return 0;
 }
