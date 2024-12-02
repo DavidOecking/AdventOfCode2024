@@ -23,7 +23,6 @@ bool isSafe(Direction direction, int currentNumber, int previousNumber){
 int main(int argc, char** argv){
 
     int safeCount = 0;
-    int dampenerSafeCount = 0;
     std::vector<std::array<int, 5>> safetyReports;
     std::ifstream inputFile("input");
     std::string line;
@@ -33,7 +32,6 @@ int main(int argc, char** argv){
         std::array<int, 5> currentReport = {};
         int index = 0;
         bool safe = false;
-        int badLevelCount = 0;
         Direction direction;
 
         while(currentLineStream >> currentNumber){
@@ -45,24 +43,17 @@ int main(int argc, char** argv){
                     direction = Ascending;
                     safe = true;
                 }
-            }else if(index != 0 && badLevelCount <= 1){
+            }else if(safe){
                 safe = isSafe(direction, currentNumber, currentReport[index-1]);
             }
             currentReport[index] = currentNumber;
             index++;
         }
 
-        if(badLevelCount <= 1){ 
-            if(badLevelCount ==  0){
-                safeCount++; 
-            }
-            dampenerSafeCount++;
-        }
-
+        if(safe){ safeCount++; }
         safetyReports.push_back(currentReport);
     }
 
     std::cout << "Number of safe reports: " << safeCount << std::endl;
-    std::cout << "Number of safe reports with dampener: " << safeCount << std::endl;
     return 0;
 }
