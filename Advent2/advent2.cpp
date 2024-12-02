@@ -4,20 +4,40 @@
 #include <string>
 #include <vector>  
 #include <array>
+#include <algorithm>
 
 enum Direction {
+    Unitialized,
     Ascending,
-    Descending
+    Descending,
+    Equal,
 };
+
+bool isDistanceSafe(int first, int second){
+    return abs(first-second)<=3;
+}
 
 bool isSafe(Direction direction, int currentNumber, int previousNumber){
     if(direction == Descending && currentNumber<previousNumber){
-        return abs(currentNumber-previousNumber)<=3;
+        return isDistanceSafe(currentNumber, previousNumber);
     }
     if(direction == Ascending && currentNumber>previousNumber){
-        return abs(currentNumber-previousNumber)<=3;
+        return isDistanceSafe(currentNumber, previousNumber);
     }
     return false;
+}
+
+bool isSafeWithDampener(std::array<int, 5> report){
+    bool levelRemoved = false;
+    bool currentDirection;
+
+    for(int i = 0; i<report.size(); i++){
+       if(!isDistanceSafe(report[i],report[i-1])){
+
+       }
+    }
+
+    return true;
 }
 
 int main(int argc, char** argv){
@@ -54,6 +74,9 @@ int main(int argc, char** argv){
         safetyReports.push_back(currentReport);
     }
 
+    int dampenedSafeCount = std::count_if(safetyReports.begin(), safetyReports.end(), isSafeWithDampener);
+    
     std::cout << "Number of safe reports: " << safeCount << std::endl;
+    std::cout << "Number of safe reports with Dampener: " << dampenedSafeCount << std::endl;
     return 0;
 }
