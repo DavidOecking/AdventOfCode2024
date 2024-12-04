@@ -10,10 +10,9 @@ class XmasFinder{
     public:
         XmasFinder() = default;
 
-        int countXmasInFile(const std::string fileName){
+        int countXmasInFile(std::vector<std::string> xmasList){
             int count = 0;
             std::string xmas = "XMAS";
-            std::vector<std::string> xmasList = readXmasFile(fileName);
             for(int row = 0; row<xmasList.size(); row++){
                 for(int column = 0; column<xmasList[row].size(); column++){
                     char currentChar = xmasList[row][column];
@@ -112,19 +111,36 @@ class XmasFinder{
             return count;
         }
 
-    private:
+        int countX_masInFile(std::vector<std::string> xmasList){
+            int count = 0;
+            std::string xmas = "MAS";
+            for(int row = 0; row<xmasList.size(); row++){
+                for(int column = 0; column<xmasList[row].size(); column++){
+                    if(xmasList[row][column]=='A'){
+                        if(row >= 1 
+                        && column >= 1 
+                        && row <= xmasList.size()-2 
+                        && column <= xmasList[row].size()-2){
+                            if(xmasList[row-1][column-1] == 'M' && xmasList[row+1][column+1] == 'S' 
+                            || xmasList[row-1][column-1] == 'S' && xmasList[row+1][column+1] == 'M'){
+                                if(xmasList[row-1][column+1] == 'M' && xmasList[row+1][column-1] == 'S' 
+                                || xmasList[row-1][column+1] == 'S' && xmasList[row+1][column-1] == 'M'){
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return count;
+        }
+
         std::vector<std::string> readXmasFile(const std::string fileName){
             std::vector<std::string> xmasList;
             std::ifstream inputFile(fileName);
             std::string currentLine;
             while(std::getline(inputFile,currentLine)){
-                std::stringstream currentLineStream(currentLine);
-                std::string xmasLine;
-                char currentCharacter;
-                while(currentLineStream >> currentCharacter){
-                    xmasLine += currentCharacter;
-                }
-                xmasList.push_back(xmasLine);
+                xmasList.push_back(currentLine);
             }
             return xmasList;
         }
@@ -134,7 +150,10 @@ class XmasFinder{
 
 int main(int argc, char** argv){
     XmasFinder finder;
-    int count = finder.countXmasInFile("input");
-    std::cout << "Number of XMAS in file: " << count << std::endl;
+    auto xmasText = finder.readXmasFile("input");
+    int xmasCount = finder.countXmasInFile(xmasText);
+    int x_masCount = finder.countX_masInFile(xmasText);
+    std::cout << "Number of XMAS in file: " << xmasCount << std::endl;
+    std::cout << "Number of X-MAS in file: " << x_masCount << std::endl;
     return 0;
 }
