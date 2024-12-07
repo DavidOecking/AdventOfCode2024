@@ -13,7 +13,14 @@ bool isSolvable(std::vector<unsigned long long>& equation, int currentIndex, uns
     }
     unsigned long long addResult = currentResult + equation[currentIndex];
     unsigned long long multResult = currentResult * equation[currentIndex];
-    return isSolvable(equation, currentIndex+1, addResult) || isSolvable(equation, currentIndex+1, multResult);
+
+    std::string resultString = std::to_string(currentResult);
+    std::string currentString = std::to_string(equation[currentIndex]);
+    unsigned long long combinedResult = std::stoull(resultString+currentString);
+
+    return isSolvable(equation, currentIndex+1, addResult) 
+            || isSolvable(equation, currentIndex+1, multResult)
+            || isSolvable(equation, currentIndex+1, combinedResult);
 }
 
 int main(int argc, char** argv){
